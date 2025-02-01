@@ -1,0 +1,53 @@
+keycloak:
+  enabled: true
+  postgresql:
+    enabled: false
+  auth:
+    adminPassword: password
+  externalDatabase:
+    host: "{{ .Release.Name }}-postgresql"
+    user: keycloak
+    password: password
+    database: keycloak
+    port: 5432
+  initContainers:
+  - name: "{{ .Release.Name }}-keycloak-init-wait-postgresql"
+    image: busybox:1.32
+    imagePullPolicy: IfNotPresent
+    command:
+     - sh
+    args:
+      - -c
+      - |
+        echo 'Waiting for Postgresql to become ready...'
+
+        until printf "." && nc -z -w 2 {{ .Release.Name }}-postgresql 5432; do
+            sleep 2;
+        done;
+
+        echo 'Postgresql OK ✓'
+postgresql:
+  enabled: true
+  auth:
+    postgresPassword: password
+    database: tmj
+  primary:
+    initdb:
+      user: postgres
+      password: password
+      scripts:
+        dbinit_api.sql: |
+          CREATE USER tmj WITH ENCRYPTED PASSWORD 'password';
+          GRANT USAGE, CREATE ON SCHEMA public TO tmj;
+          GRANT ALL PRIVILEGES ON DATABASE tmj TO tmj;
+          ALTER DATABASE tmj OWNER TO tmj;
+        dbinit_keycloak.sql: |
+          CREATE DATABASE keycloak;
+          CREATE USER keycloak WITH ENCRYPTED PASSWORD 'password';
+          GRANT USAGE, CREATE ON SCHEMA public TO keycloak;
+          GRANT ALL PRIVILEGES ON DATABASE keycloak TO keycloak;
+          ALTER DATABASE keycloak OWNER TO keycloak;
+tmj-api:
+  enabled: true
+tmj-web:
+  enabled: true

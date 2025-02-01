@@ -1,0 +1,15 @@
+dependencies:
+- name: keycloak
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 24.2.0
+- name: postgresql
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 16.3.5
+- name: tmj-api
+  repository: file://../../tmj-api/helm/tmj-api
+  version: 1.0.0-SNAPSHOT
+- name: tmj-web
+  repository: file://../../tmj-web/helm/tmj-web
+  version: 1.0.0-SNAPSHOT
+digest: sha256:f973b7578cdc2478ad8af5b9b6444fb3b28ac4a866baa98928409c80c7f60dd2
+generated: "2025-02-01T07:55:37.626829-08:00"
