@@ -4,6 +4,14 @@ keycloak:
     enabled: false
   auth:
     adminPassword: password
+  service:
+    type: NodePort
+    ports:
+      http: 8080
+      https: 8443
+    nodePorts:
+      http: 31080
+      https: 31443
   externalDatabase:
     host: "{{ .Release.Name }}-postgresql"
     user: keycloak
@@ -51,3 +59,7 @@ tmj-api:
   enabled: true
 tmj-web:
   enabled: true
+  service:
+    type: NodePort
+    port: 8080
+    nodePort: 32080
